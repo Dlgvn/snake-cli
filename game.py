@@ -3,10 +3,11 @@ import time
 
 from config import (
     BOARD_WIDTH, BOARD_HEIGHT, INITIAL_SPEED,
-    SPEED_INCREMENT, MIN_SPEED, UP, DOWN, LEFT, RIGHT
+    SPEED_INCREMENT, MIN_SPEED, UP, DOWN, LEFT, RIGHT,
+    BONUS_FOOD_INTERVAL
 )
 from snake import Snake
-from food import Food
+from food import Food, BonusFood
 from ui import UI
 from leaderboard import save_score, is_high_score
 
@@ -24,6 +25,8 @@ class Game:
         self.snake = Snake(self.board_width // 2, self.board_height // 2)
         self.food = Food()
         self.food.spawn(self.snake.body, self.board_width, self.board_height)
+        self.bonus_food = BonusFood()
+        self.food_count = 0  # Track regular foods eaten for bonus spawning
         self.score = 0
         self.game_over = False
         self.speed = INITIAL_SPEED
@@ -56,11 +59,35 @@ class Game:
             self.game_over = True
             return
 
-        # Check food collision
+        # Check bonus food expiration
+        if self.bonus_food.is_expired():
+            self.bonus_food.despawn()
+
+        # Check bonus food collision
+        if self.bonus_food.is_eaten(self.snake.head):
+            bonus_score = self.bonus_food.calculate_bonus_score()
+            self.score += bonus_score
+            self.snake.grow()
+            self.bonus_food.despawn()
+
+        # Check regular food collision
         if self.food.is_eaten(self.snake.head):
             self.snake.grow()
             self.score += 10
-            self.food.spawn(self.snake.body, self.board_width, self.board_height)
+            self.food_count += 1
+
+            # Spawn bonus food after every BONUS_FOOD_INTERVAL regular foods
+            if self.food_count % BONUS_FOOD_INTERVAL == 0 and not self.bonus_food.active:
+                self.bonus_food.spawn(
+                    self.snake.body,
+                    self.board_width,
+                    self.board_height,
+                    self.food.position
+                )
+
+            # Spawn new regular food (exclude bonus food positions)
+            excluded = self.bonus_food.get_all_positions() if self.bonus_food.active else []
+            self.food.spawn(self.snake.body, self.board_width, self.board_height, excluded)
 
             # Increase speed
             self.speed = max(MIN_SPEED, INITIAL_SPEED - (self.score // 50) * SPEED_INCREMENT)
@@ -87,7 +114,7 @@ class Game:
 
             # Render
             if not self.game_over:
-                self.ui.render(self.snake, self.food, self.score)
+                self.ui.render(self.snake, self.food, self.score, self.bonus_food)
 
             # Frame timing
             elapsed = (time.time() - start_time) * 1000

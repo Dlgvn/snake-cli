@@ -12,6 +12,13 @@ BORDER_CHAR = '#'
 SNAKE_HEAD = '@'
 SNAKE_BODY = 'o'
 FOOD_CHAR = '*'
+BONUS_FOOD_CHAR = '$'
+
+# Bonus food settings
+BONUS_FOOD_INTERVAL = 4  # Spawn bonus after every N regular foods
+BONUS_FOOD_DURATION = 10  # Seconds before bonus food disappears
+BONUS_MAX_SCORE = 100  # Maximum bonus score (if eaten immediately)
+BONUS_MIN_SCORE = 10  # Minimum bonus score (if eaten at last moment)
 
 # Directions
 UP = (0, -1)

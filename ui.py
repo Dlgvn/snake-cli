@@ -1,5 +1,5 @@
 import curses
-from config import BORDER_CHAR, SNAKE_HEAD, SNAKE_BODY, FOOD_CHAR
+from config import BORDER_CHAR, SNAKE_HEAD, SNAKE_BODY, FOOD_CHAR, BONUS_FOOD_CHAR
 
 
 class UI:
@@ -24,6 +24,7 @@ class UI:
             curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)     # Food
             curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)  # Border
             curses.init_pair(4, curses.COLOR_CYAN, curses.COLOR_BLACK)    # UI
+            curses.init_pair(5, curses.COLOR_MAGENTA, curses.COLOR_BLACK) # Bonus food
 
     def draw_border(self):
         """Draw the Nokia-style game border."""
@@ -102,6 +103,40 @@ class UI:
         except curses.error:
             pass
 
+    def draw_bonus_food(self, bonus_food):
+        """Draw the 2x2 bonus food on the board."""
+        if not bonus_food.active or bonus_food.position is None:
+            return
+
+        color = curses.color_pair(5) if curses.has_colors() else 0
+        # Make it blink by using bold attribute
+        attr = color | curses.A_BOLD
+
+        x, y = bonus_food.position
+        # Draw 2x2 bonus food
+        for dx in range(2):
+            for dy in range(2):
+                screen_x = self.offset_x + 1 + x + dx
+                screen_y = self.offset_y + 1 + y + dy
+                try:
+                    self.stdscr.addch(screen_y, screen_x, BONUS_FOOD_CHAR, attr)
+                except curses.error:
+                    pass
+
+    def draw_bonus_timer(self, bonus_food):
+        """Draw bonus food timer if active."""
+        if not bonus_food.active:
+            return
+
+        ui_color = curses.color_pair(5) if curses.has_colors() else 0
+        remaining = bonus_food.get_time_remaining()
+        timer_text = f"BONUS: {remaining:.1f}s"
+        # Draw timer in the header area
+        try:
+            self.stdscr.addstr(1, self.board_width - 5, timer_text, ui_color | curses.A_BOLD)
+        except curses.error:
+            pass
+
     def clear_game_area(self):
         """Clear only the game area."""
         for y in range(self.board_height):
@@ -113,7 +148,7 @@ class UI:
                 except curses.error:
                     pass
 
-    def render(self, snake, food, score):
+    def render(self, snake, food, score, bonus_food=None):
         """Render the complete game frame."""
         self.stdscr.clear()
         self.draw_border()
@@ -121,6 +156,9 @@ class UI:
         self.draw_controls()
         self.draw_snake(snake)
         self.draw_food(food)
+        if bonus_food:
+            self.draw_bonus_food(bonus_food)
+            self.draw_bonus_timer(bonus_food)
         self.stdscr.refresh()
 
     def get_input(self):
