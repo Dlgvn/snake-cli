@@ -4,12 +4,12 @@ A Nokia-style Snake game for the terminal, built with Python and curses.
 
 ```
 ┌──────────────────────────────────────────┐
-│  SNAKE           Score: 30               │
+│  SNAKE           Score: 50   BONUS: 8.5s │
 ├──────────────────────────────────────────┤
 │ ########################################│
 │ #                                      # │
-│ #     ooooo@                           # │
-│ #                     *                # │
+│ #     ooooo@              $$           # │
+│ #                  *      $$           # │
 │ #                                      # │
 │ ########################################│
 ├──────────────────────────────────────────┤
@@ -50,10 +50,25 @@ python3 main.py --width 60 --height 30 --speed 80
 ## Features
 
 - Classic snake gameplay
+- **Wall wrapping** - pass through walls and appear on the opposite side
+- **Bonus food** - 2x2 bonus spawns every 4 foods with timed scoring (10-100 points)
 - Nokia-style bordered UI with colors
 - Speed increases as you score
 - Leaderboard with top 10 scores
 - Configurable board size and speed
+
+## Gameplay
+
+### Regular Food (`*`)
+- Eat to grow and score 10 points
+- Speed increases as your score grows
+
+### Bonus Food (`$$`)
+- Spawns after every 4 regular foods eaten
+- Appears as a 2x2 block in magenta
+- Timer counts down from 10 seconds
+- **Faster = more points**: up to 100 points if eaten immediately, minimum 10 points
+- Disappears if not collected in time
 
 ## Project Structure
 
