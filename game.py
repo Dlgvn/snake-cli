@@ -48,11 +48,11 @@ class Game:
 
     def update(self):
         """Update game state."""
-        # Move snake
-        self.snake.move()
+        # Move snake with wall wrapping
+        self.snake.move(self.board_width, self.board_height)
 
-        # Check collisions
-        if self.snake.check_collision(self.board_width, self.board_height):
+        # Check self collision only (walls wrap around)
+        if self.snake.check_self_collision():
             self.game_over = True
             return
 

@@ -27,11 +27,20 @@ class Snake:
         if new_direction in OPPOSITES and OPPOSITES[new_direction] != self.direction:
             self.direction = new_direction
 
-    def move(self):
-        """Move the snake in the current direction."""
+    def move(self, width=None, height=None):
+        """Move the snake in the current direction with wall wrapping."""
         head_x, head_y = self.head
         dx, dy = self.direction
-        new_head = (head_x + dx, head_y + dy)
+        new_x = head_x + dx
+        new_y = head_y + dy
+
+        # Wrap around walls if dimensions provided
+        if width is not None:
+            new_x = new_x % width
+        if height is not None:
+            new_y = new_y % height
+
+        new_head = (new_x, new_y)
 
         # Insert new head
         self.body.insert(0, new_head)
