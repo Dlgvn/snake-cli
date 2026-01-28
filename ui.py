@@ -72,7 +72,7 @@ class UI:
         """Draw control hints at the bottom."""
         ui_color = curses.color_pair(4) if curses.has_colors() else 0
         bottom = self.offset_y + self.board_height + 3
-        controls = "  ← → ↑ ↓ to move   Q to quit"
+        controls = "  WASD or Arrows to move   Q to quit"
         padding = self.board_width + 4 - len(controls)
         self.stdscr.addstr(bottom, 1, controls + ' ' * max(0, padding), ui_color)
 

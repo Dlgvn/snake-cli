@@ -13,7 +13,7 @@ A Nokia-style Snake game for the terminal, built with Python and curses.
 │ #                                      # │
 │ ########################################│
 ├──────────────────────────────────────────┤
-│  ← → ↑ ↓ to move   Q to quit           │
+│  WASD or Arrows to move   Q to quit    │
 └──────────────────────────────────────────┘
 ```
 
@@ -31,7 +31,10 @@ python3 main.py
 
 | Key | Action |
 |-----|--------|
-| ↑ ↓ ← → | Move snake |
+| W / ↑ | Move up |
+| S / ↓ | Move down |
+| A / ← | Move left |
+| D / → | Move right |
 | Q | Quit game |
 | Enter | Confirm selection |
 

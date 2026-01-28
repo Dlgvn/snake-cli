@@ -35,13 +35,13 @@ class Game:
         """Process keyboard input."""
         key = self.ui.get_input()
 
-        if key == curses.KEY_UP:
+        if key in [curses.KEY_UP, ord('w'), ord('W')]:
             self.snake.change_direction(UP)
-        elif key == curses.KEY_DOWN:
+        elif key in [curses.KEY_DOWN, ord('s'), ord('S')]:
             self.snake.change_direction(DOWN)
-        elif key == curses.KEY_LEFT:
+        elif key in [curses.KEY_LEFT, ord('a'), ord('A')]:
             self.snake.change_direction(LEFT)
-        elif key == curses.KEY_RIGHT:
+        elif key in [curses.KEY_RIGHT, ord('d'), ord('D')]:
             self.snake.change_direction(RIGHT)
         elif key in [ord('q'), ord('Q')]:
             self.game_over = True
